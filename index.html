@@ -70,7 +70,7 @@ button{
 .alpha-btn{ background:#e91e63; }
 .giveup-btn{ background:#f44336; }
 
-/* PRIME GAME */
+/* PRIME */
 
 #primePage{
     display:none;
@@ -283,8 +283,6 @@ select{
         font-size:20px;
     }
 
-    /* 5 x 20 MATRIX */
-
     .grid{
         grid-template-columns:repeat(5,60px);
         gap:8px;
@@ -459,8 +457,6 @@ START
 
 </div>
 
-<!-- QUIZ -->
-
 <div id="mathQuiz"
 style="display:none;">
 
@@ -591,17 +587,11 @@ function openPrimeGame(){
 
     let numbers = [];
 
-    /* CREATE 1 TO 100 */
-
     for(let i=1;i<=100;i++){
         numbers.push(i);
     }
 
-    /* RANDOM ORDER */
-
     numbers.sort(() => Math.random() - 0.5);
-
-    /* CREATE BOXES */
 
     numbers.forEach(number => {
 
@@ -830,6 +820,10 @@ function generateMathQuestion(){
 document.getElementById("answerInput")
 .addEventListener("input",function(){
 
+    if(this.disabled){
+        return;
+    }
+
     let value =
     Number(this.value);
 
@@ -845,9 +839,13 @@ document.getElementById("answerInput")
 
         setTimeout(() => {
 
+            this.value = "";
+
             this.disabled = false;
 
             generateMathQuestion();
+
+            this.focus();
 
         },500);
 
@@ -860,15 +858,21 @@ function showMathAnswer(){
     const input =
     document.getElementById("answerInput");
 
-    input.value = mathAnswer;
-
     input.disabled = true;
 
+    input.value = mathAnswer;
+
+    input.blur();
+
     setTimeout(() => {
+
+        input.value = "";
 
         input.disabled = false;
 
         generateMathQuestion();
+
+        input.focus();
 
     },2000);
 
@@ -1146,7 +1150,6 @@ function checkAnswer(button,answer){
         currentCorrectAnswer){
 
             btn.classList.add("correct");
-
         }
 
     });
@@ -1157,31 +1160,37 @@ function checkAnswer(button,answer){
 
     setTimeout(() => {
 
-        if(currentMode === "square"){
-            squareGame();
-        }
+        nextQuizQuestion();
 
-        else if(currentMode === "squareRoot"){
-            squareRootGame();
-        }
+    },1000);
 
-        else if(currentMode === "cube"){
-            cubeGame();
-        }
+}
 
-        else if(currentMode === "cubeRoot"){
-            cubeRootGame();
-        }
+function nextQuizQuestion(){
 
-        else if(currentMode === "letterNo"){
-            letterNoGame();
-        }
+    if(currentMode === "square"){
+        squareGame();
+    }
 
-        else if(currentMode === "opposite"){
-            oppositeGame();
-        }
+    else if(currentMode === "squareRoot"){
+        squareRootGame();
+    }
 
-    },800);
+    else if(currentMode === "cube"){
+        cubeGame();
+    }
+
+    else if(currentMode === "cubeRoot"){
+        cubeRootGame();
+    }
+
+    else if(currentMode === "letterNo"){
+        letterNoGame();
+    }
+
+    else if(currentMode === "opposite"){
+        oppositeGame();
+    }
 
 }
 
@@ -1192,13 +1201,22 @@ function showQuizAnswer(){
 
     buttons.forEach(btn => {
 
+        btn.disabled = true;
+
         if(btn.innerText ==
         currentCorrectAnswer){
 
             btn.classList.add("correct");
+
         }
 
     });
+
+    setTimeout(() => {
+
+        nextQuizQuestion();
+
+    },2000);
 
 }
 
